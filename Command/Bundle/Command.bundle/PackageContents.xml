@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ApplicationPackage SchemaVersion="1.0" Version="1.0.0" ProductType="Application" Name="Command" Description="AutoCAD Command Plugin" Author="Developer">
+  <CompanyDetails Name="Company" Url="http://www.company.com" Email="support@company.com" />
+  <Components Description="Main Components">
+    <RuntimeRequirements Platform="AutoCAD*" SeriesMin="R25.0" SeriesMax="R25.1" />
+    <ComponentEntry AppName="Command" ModuleName="Contents/Command.dll" AppDescription="AutoCAD Command Plugin">
+      <Commands GroupName="ACADCMD">
+        <Command Global="TESTEXECONFIG" Local="TestExeConfig" />
+      </Commands>
+    </ComponentEntry>
+  </Components>
+</ApplicationPackage>

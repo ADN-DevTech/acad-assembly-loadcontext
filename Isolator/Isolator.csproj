@@ -1,0 +1,33 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+        <Platforms>AnyCPU;x64</Platforms>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+    </PropertyGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.WindowsDesktop.App"></FrameworkReference>
+        <PackageReference Include="System.Configuration.ConfigurationManager" Version="9.0.4" />
+    </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\Interface\Command.Interface.csproj" />
+    </ItemGroup>
+
+    <Target Name="BundlePostBuild" AfterTargets="Build">
+        <PropertyGroup>
+            <BundleRoot>$(SolutionDir)Command\Bundle\</BundleRoot>
+            <BundleContents>$(BundleRoot)Command.bundle\Contents\Isolator</BundleContents>
+        </PropertyGroup>
+        <MakeDir Directories="$(BundleContents)" />
+
+        <!-- Copy Command project outputs (excluding PDBs) -->
+        <ItemGroup>
+            <BundleFiles Include="$(OutputPath)**\*" Exclude="**\*.pdb" />
+        </ItemGroup>
+        <Copy SourceFiles="@(BundleFiles)" DestinationFolder="$(BundleContents)" SkipUnchangedFiles="true" />
+    </Target>
+</Project>

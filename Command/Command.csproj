@@ -1,0 +1,53 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>Library</OutputType>
+		<RootNamespace>Command</RootNamespace>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <GenerateAssemblyInfo>False</GenerateAssemblyInfo>
+        <Platforms>AnyCPU;x64</Platforms>
+        <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <!--Copy Local False-->
+        <PackageReference Include="AutoCAD.NET" Version="25.0.1" ExcludeAssets="runtime" />   
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Interface\Command.Interface.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="App.config">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <!-- Copy build outputs into .bundle/Contents -->
+    <Target Name="BundlePostBuild" AfterTargets="Build">
+        <PropertyGroup>
+            <BundleRoot>$(ProjectDir)Bundle\</BundleRoot>
+            <BundleContents>$(BundleRoot)$(ProjectName).bundle\Contents</BundleContents>            
+        </PropertyGroup>
+
+        <!-- Create directories if they don't exist -->
+        <MakeDir Directories="$(BundleContents)" />       
+
+        <!-- Copy Command project outputs (excluding PDBs) -->
+        <ItemGroup>
+            <BundleFiles Include="$(OutputPath)**\*" Exclude="**\*.pdb" />
+        </ItemGroup>
+        <Copy SourceFiles="@(BundleFiles)" DestinationFolder="$(BundleContents)" SkipUnchangedFiles="true" /> 
+    </Target>
+
+    <!-- Zip the entire .bundle folder into .bundle.zip -->
+    <Target Name="ZipBundleDirectory" AfterTargets="BundlePostBuild" Condition="'$(Configuration)' != 'Release'">
+        <PropertyGroup>
+            <ZipOutputFile>$(ProjectDir)$(ProjectName).bundle.zip</ZipOutputFile>
+        </PropertyGroup>
+        <ZipDirectory SourceDirectory="$(BundleRoot)" DestinationFile="$(ZipOutputFile)" Overwrite="true" />
+    </Target>
+</Project>
+
